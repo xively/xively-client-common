@@ -1,0 +1,129 @@
+syntax = "proto2";
+
+package xi_client_ftest_fw;
+
+message XiClientAPI
+{
+    enum _MqttSessionType
+    {
+        UNCLEAN_SESSION = 0;
+        CLEAN_SESSION = 1;
+    }
+
+    message _ServerAddress
+    {
+        optional string host = 1;
+        optional uint32 port = 2;
+    }
+
+    message Connect
+    {
+        optional _ServerAddress server_address = 1;
+        optional string username = 2;
+        optional string password = 3;
+        optional _MqttSessionType mqtt_session_type = 4 [default = CLEAN_SESSION];
+        optional uint32 connection_timeout = 5;
+    }
+
+    message Disconnect
+    {
+        // no attribute
+    }
+
+    message _TopicAndQoS
+    {
+        optional string topic_name = 1;
+        optional uint32 qos = 2;
+    }
+
+    message Subscribe
+    {
+        repeated _TopicAndQoS topic_qos_list = 1;
+    }
+
+    message PublishCommonData
+    {
+        optional string topic_name = 1;
+        optional uint32 qos = 2;
+    }
+
+    message PublishString
+    {
+        optional PublishCommonData publish_common_data = 1;
+        optional string payload = 2;
+        optional uint32 retain = 3;
+    }
+
+    message PublishBinary
+    {
+        optional PublishCommonData publish_common_data = 1;
+        optional bytes payload = 2;
+        optional uint32 retain = 3;
+    }
+
+    message PublishTimeseries
+    {
+        optional PublishCommonData publish_common_data = 1;
+        optional float payload = 2;
+    }
+
+    message PublishFormattedTimeseries
+    {
+        optional PublishCommonData publish_common_data = 1;
+        optional uint32 time = 2;
+        optional string category = 3;
+        optional string string_value = 4;
+        optional float numeric_value = 5;
+    }
+
+    message SetupTLS
+    {
+        optional string ca_cert_file = 1;
+    }
+
+    optional Connect connect = 1;
+    optional Disconnect disconnect = 2;
+    optional Subscribe subscribe = 3;
+    optional PublishString publish_string = 4;
+    optional PublishBinary publish_binary = 5;
+    optional PublishTimeseries publish_timeseries = 6;
+    optional PublishFormattedTimeseries publish_formatted_timeseries= 7;
+
+    optional SetupTLS setup_tls = 8;
+}
+
+message XiClientCallback
+{
+    message OnConnectFinish
+    {
+        optional uint32 connect_result = 1;
+    }
+
+    message OnDisconnect
+    {
+        optional uint32 error_code = 1;
+    }
+
+    message OnSubscribeFinish
+    {
+        repeated uint32 subscribe_result_list = 1;
+    }
+
+    message OnMessageReceived
+    {
+        optional string topic_name = 1;
+        optional uint32 qos = 2;
+        optional bytes payload = 3;
+    }
+
+    message OnPublishFinish
+    {
+        optional uint32 return_code = 1;
+    }
+
+    optional OnConnectFinish on_connect_finish = 1;
+    optional OnDisconnect on_disconnect = 2;
+    optional OnSubscribeFinish on_subscribe_finish = 3;
+    optional OnMessageReceived on_message_received = 4;
+    optional OnPublishFinish on_publish_finish = 5;
+}

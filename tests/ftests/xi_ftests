@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# capturing stdout/stderr/stdin https://pytest.org/latest/capture.html
+# capturing is on by default, -s switch turns it off
+#python3 -m pytest -vv --color=yes
+#python3 -m pytest -v --color=yes "$@"
+python3 -m pytest -v --color=yes "$@" --junitxml=xi_ftest_result_junit.xml ; python ../tools/xi_ftest_junit_to_html.py > xi_ftest_result_junit.html
+#python3 -m pytest -s -vv --color=yes -k test_connect_successfully
+#python3 -m pytest -s -vv --color=yes -k test_receive_5_unsubscribed_messages
+#python3 -m pytest -s -vv --color=yes -k test_receive_5_subscribed_messages "$@"
+#python3 -m pytest -s -vv --color=yes -k test_reconnects
+#python3 -tt -m pytest -s -vv --color=yes -k test_clientSidePublish_messageArrivesAtBroker
+#python3 -tt -m pytest -s -vv --color=yes -k test_tls_connect_with_bad_domain
+#python3 -tt -m pytest -s -vv --color=yes -k test_tls_connect_successfully
+#python3 -tt -m pytest -s -vv --color=yes -k test_disconnect_brokerClosesConnectionBeforeConnackMessageSent_conClbCalledWithProperConnackError

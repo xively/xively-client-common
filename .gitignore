@@ -1,0 +1,14 @@
+*.a
+*.o
+*.so
+*.sw?
+*~
+*.zip
+*.pyc
+
+
+.cache/
+.ropeproject/
+
+tmp/
+.idea/
