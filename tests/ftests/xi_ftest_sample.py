@@ -266,8 +266,8 @@ def test_tls_connect_with_expired_cert(xift):
     certfile = "self-signed-expired-cert.pem"
 
     xift.client_sut.setup_tls(certfile)
-    xift.broker.setup_tls("../../../xi_client_common/certs/test/" + certfile,
-                          "../../../xi_client_common/certs/test/" + "self-signed-expired-key.pem")
+    xift.broker.setup_tls("../../../xively-client-common/certs/test/" + certfile,
+                          "../../../xively-client-common/certs/test/" + "self-signed-expired-key.pem")
 
     xift.client_sut.on_connect_finish.side_effect = client_on_connect_finish
 
@@ -287,8 +287,8 @@ def test_tls_connect_with_bad_domain(xift):
     certfile = "self-signed-bad-domain-cert.pem"
 
     xift.client_sut.setup_tls(certfile)
-    xift.broker.setup_tls("../../../xi_client_common/certs/test/" + certfile,
-                          "../../../xi_client_common/certs/test/" + "self-signed-bad-domain-key.pem")
+    xift.broker.setup_tls("../../../xively-client-common/certs/test/" + certfile,
+                          "../../../xively-client-common/certs/test/" + "self-signed-bad-domain-key.pem")
 
     #xift.broker.on_ssl_error = lambda broker, username, ssl_err: print("Broker SSL error!!!")
     xift.broker.on_client_disconnect.side_effect = lambda br, userdata, rc: xift.broker.trigger_shutdown()

@@ -114,8 +114,8 @@ def act(xift, setup_default_cert=True, endpoint=None):
         certfile = "self-signed-localhost-cert.pem"
         keyfile = "self-signed-localhost-key.pem"
         xift.client_sut.setup_tls(certfile)
-        xift.broker.setup_tls("../../../xi_client_common/certs/test/" + certfile,
-                              "../../../xi_client_common/certs/test/" + keyfile,
+        xift.broker.setup_tls("../../../xively-client-common/certs/test/" + certfile,
+                              "../../../xively-client-common/certs/test/" + keyfile,
                               tls_version=get_tls_version_to_platform(xift.sut_platform))
 
     # Ignite

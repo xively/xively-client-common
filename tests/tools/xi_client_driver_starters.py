@@ -11,7 +11,7 @@ def generate_command_line_arguments(host, port, is_websocket=False):
 class XiClientDriverStarter_C:
 
     def start_driver(self, host, port):
-        commandline_start = ("../../../xi_client_c/bin/osx/tests/tools/xi_libxively_driver " + generate_command_line_arguments(host, port)).split()
+        commandline_start = ("../../../xively-client-c/bin/osx/tests/tools/xi_libxively_driver " + generate_command_line_arguments(host, port)).split()
         self._client_process = subprocess.Popen( commandline_start )
 
     def prepare_environment(self, ca_cert_file):
@@ -21,7 +21,7 @@ class XiClientDriverStarter_C:
         if not os.path.isdir(libxively_working_directory):
             os.makedirs(libxively_working_directory)
 
-        cert_path_source = "../../../xi_client_common/certs/test/" + ca_cert_file
+        cert_path_source = "../../../xively-client-common/certs/test/" + ca_cert_file
         cert_path_target = libxively_working_directory + "/xi_RootCA_list.pem"
 
         if os.path.exists(cert_path_source) and not os.path.exists(cert_path_target):
