@@ -123,7 +123,7 @@ class XiControlChannel_codec_protobuf_driver:
             if (xi_client_API.HasField('setup_tls')):
                 if xi_client_API.setup_tls:
                     XivelyConfig.XI_MQTT_CERTS = \
-                    [ "../../../../xi_client_common/certs/test/" + xi_client_API.setup_tls.ca_cert_file ];
+                    [ "../../../../xively-client-common/certs/test/" + xi_client_API.setup_tls.ca_cert_file ];
 
     def __getLogPrefix(self):
         return "[ PD  proto  ] [" + threading.current_thread().getName() + "]: "
