@@ -1,9 +1,19 @@
 import subprocess
 import tools.xi_client_settings
 from tools.xi_client_settings import XiClientPlatform
+from sys import platform as _platform
 import os
 import string
 import shutil
+
+def get_platform_folder():
+    platform_bin_folders = { ( 'linux', 'linux2' ) : 'linux', ( 'darwin' ) : 'osx' }
+
+    for platforms, bin_folder in platform_bin_folders.items():
+        if _platform in platforms:
+            return bin_folder
+
+    return ""
 
 def generate_command_line_arguments(host, port, is_websocket=False):
     return "-h " + host + " -p " + str(port) + (" -w" if is_websocket else "")
@@ -11,7 +21,7 @@ def generate_command_line_arguments(host, port, is_websocket=False):
 class XiClientDriverStarter_C:
 
     def start_driver(self, host, port):
-        commandline_start = ("../../../xively-client-c/bin/osx/tests/tools/xi_libxively_driver " + generate_command_line_arguments(host, port)).split()
+        commandline_start = ("../../../xively-client-c/bin/" + get_platform_folder() + "/tests/tools/xi_libxively_driver " + generate_command_line_arguments(host, port)).split()
         self._client_process = subprocess.Popen( commandline_start )
 
     def prepare_environment(self, ca_cert_file):
