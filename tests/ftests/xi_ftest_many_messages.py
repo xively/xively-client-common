@@ -47,7 +47,7 @@ def gen_message_payload(msg_len):
     msg_len = random.randint(min_len,max_len)
     return "".join([random.choice(payload_seed) for i in range(0,msg_len)])
 
-def test_publish_10messages_in_one_buffer(xift, publish_parameters_setup ):
+def test_publish_many_messages_in_one_buffer(xift, publish_parameters_setup ):
     """
         Tests if the client is capable of receiving several messages glued together
         so that the receive buffer may contain some pending data prereserved.
