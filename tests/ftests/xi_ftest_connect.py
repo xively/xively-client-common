@@ -91,12 +91,11 @@ def test_connect_connectionRefused_conClbCalledWithProperConnackError(xift, mqtt
 
     # client when connection finished just stops
     def client_on_connect_finish( connection_res ):
-        xift.broker.trigger_shutdown()
         xift.client_sut.stop()
 
     # brokers side effects
     xift.broker.on_client_connect.side_effect = broker_on_client_connect
-    xift.broker.on_client_disconnect.side_effect = None
+    xift.broker.on_client_disconnect.side_effect = lambda value: xift.broker.trigger_shutdown()
 
     # client side effects
     xift.client_sut.on_connect_finish.side_effect = client_on_connect_finish
