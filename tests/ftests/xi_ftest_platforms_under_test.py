@@ -13,7 +13,7 @@ PLATFORMS_UNDER_TEST = {
         ],
     'values': [
         #{ "platform" : XiClientPlatform.PYTHON_2,   "socket_type" : XiClientSocketType.SOCKET },
-        { "platform" : XiClientPlatform.PYTHON_3,   "socket_type" : XiClientSocketType.SOCKET },
+         { "platform" : XiClientPlatform.PYTHON_3,   "socket_type" : XiClientSocketType.SOCKET },
         #{ "platform" : XiClientPlatform.PYTHON_2,   "socket_type" : XiClientSocketType.WEBSOCKET },
         #{ "platform" : XiClientPlatform.PYTHON_3,   "socket_type" : XiClientSocketType.WEBSOCKET },
         #{ "platform" : XiClientPlatform.JAVASCRIPT, "socket_type" : XiClientSocketType.WEBSOCKET },
