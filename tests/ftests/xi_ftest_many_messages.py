@@ -8,7 +8,6 @@ from tools.xi_ftest_fixture import act
 from unittest.mock import ANY, call
 from tools.xi_utils import Counter, BasicMessageMatcher
 from tools.xi_mock_broker import mqtt_messages
-from tools.xi_mock_broker.mqtt_messages import MQTT_ERR_SUCCESS, MQTT_ERR_CONN_LOST
 from tools.xi_client_error_codes import XiClientErrorCodes
 
 import random
@@ -101,6 +100,7 @@ def test_publish_10messages_in_one_buffer(xift, publish_parameters_setup ):
     act(xift)
 
     expected_calls_broker = [ call.broker.on_client_connect(ANY,ANY)
+                            , call.broker.on_client_subscribe(ANY, ANY, ANY, 0)
                             , call.broker.on_client_subscribe(ANY, ANY, ANY, 0)
                             , call.broker.on_client_disconnect(ANY, ANY, 0) ]
 
