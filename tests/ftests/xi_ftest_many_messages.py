@@ -20,8 +20,8 @@ class mqtt_publish_parameters:
     """
     Helper class that encapsulates publish test parameters
     """
-    def __init__(self, mqtt_msg_payload_size, mqtt_msg_count):
-        self.mqtt_msg_payload_size = mqtt_msg_payload_size
+    def __init__(self, mqtt_msg_payload_size_min_max, mqtt_msg_count):
+        self.mqtt_msg_payload_size_min_max = mqtt_msg_payload_size_min_max
         self.mqtt_msg_count = mqtt_msg_count
 
 """
@@ -39,11 +39,11 @@ Generates the test parameters so that we can use same test implementation with d
 def publish_parameters_setup(request):
     return request.param
 
-def gen_message_payload(msg_len):
+def gen_message_payload(msg_len_min_max):
     """
     Generates random and human readable msg payload within the range between min_len and max_len
     """
-    min_len, max_len = msg_len
+    min_len, max_len = msg_len_min_max
     msg_len = random.randint(min_len,max_len)
     return "".join([random.choice(payload_seed) for i in range(0,msg_len)])
 
@@ -63,7 +63,7 @@ def test_publish_many_messages_in_one_buffer(xift, publish_parameters_setup ):
     def on_subscribe_finish( result_queue ):
         for i in range(0, messages_to_send):
             xift.broker.publish(TestEssentials.topic
-                , gen_message_payload(publish_parameters_setup.mqtt_msg_payload_size))
+                , gen_message_payload(publish_parameters_setup.mqtt_msg_payload_size_min_max))
 
     def on_message_received( topic, message ):
         global messages_to_receive
