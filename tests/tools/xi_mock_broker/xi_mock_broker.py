@@ -190,6 +190,7 @@ class MockBroker(object):
             "pos": 0}
         self._out_packet = []
         self._current_out_packet = None
+        self._buffer_to_send = None
         self._last_msg_in = time.time()
         self._last_msg_out = time.time()
         self._last_mid = 0
@@ -840,14 +841,36 @@ class MockBroker(object):
     def _packet_write(self):
         self._current_out_packet_mutex.acquire()
 
+        if not self._buffer_to_send:
+            self._buffer_to_send = { 'pos' : 0, 'to_process' : 0, 'packet' : bytearray() }
+
         while self._current_out_packet:
             packet = self._current_out_packet
+            self._buffer_to_send['to_process'] += packet['to_process']
+            self._buffer_to_send['packet'] += packet['packet']
 
+            if (packet['command'] & 0xF0) == PUBLISH and packet['qos'] == 0:
+                self._callback_mutex.acquire()
+                if self.on_publish:
+                    self._in_callback = True
+                    self.on_publish(self, self._userdata, packet['mid'])
+                    self._in_callback = False
+
+            self._out_packet_mutex.acquire()
+            if len(self._out_packet) > 0:
+                self._current_out_packet = self._out_packet.pop(0)
+            else:
+                self._current_out_packet = None
+                if self._shutdown_after_last_packet_sent is True:
+                    self.trigger_shutdown(False)
+            self._out_packet_mutex.release()
+
+        while self._buffer_to_send['to_process'] > 0:
             try:
                 if self._ssl:
-                    write_length = self._ssl.write(packet['packet'][packet['pos']:])
+                    write_length = self._ssl.write(self._buffer_to_send['packet'][self._buffer_to_send['pos']:])
                 else:
-                    write_length = self._sock.send(packet['packet'][packet['pos']:])
+                    write_length = self._sock.send(self._buffer_to_send['packet'][self._buffer_to_send['pos']:])
             except AttributeError:
                 self._current_out_packet_mutex.release()
                 return MQTT_ERR_SUCCESS
@@ -861,36 +884,12 @@ class MockBroker(object):
                 return 1
 
             if write_length > 0:
-                packet['to_process'] = packet['to_process'] - write_length
-                packet['pos'] = packet['pos'] + write_length
-
-                if packet['to_process'] == 0:
-                    if (packet['command'] & 0xF0) == PUBLISH and packet['qos'] == 0:
-                        self._callback_mutex.acquire()
-                        if self.on_publish:
-                            self._in_callback = True
-                            self.on_publish(self, self._userdata, packet['mid'])
-                            self._in_callback = False
-                    #if (packet['command'] & 0xF0) == CONNACK:
-                    #    self._callback_mutex.acquire()
-                    #    if self.on_connack:
-                    #        self._in_callback = True
-                    #        self.on_connack(self)
-                    #        self._in_callback = False
-
-                        self._callback_mutex.release()
-
-                    self._out_packet_mutex.acquire()
-                    if len(self._out_packet) > 0:
-                        self._current_out_packet = self._out_packet.pop(0)
-                    else:
-                        self._current_out_packet = None
-                        if self._shutdown_after_last_packet_sent is True:
-                            self.trigger_shutdown(False)
-                    self._out_packet_mutex.release()
+                self._buffer_to_send['to_process'] = self._buffer_to_send['to_process'] - write_length
+                self._buffer_to_send['pos'] = self._buffer_to_send['pos'] + write_length
             else:
                 pass  # FIXME
 
+        self._buffer_to_send = None
         self._current_out_packet_mutex.release()
 
         self._msgtime_mutex.acquire()
