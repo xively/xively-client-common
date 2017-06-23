@@ -23,7 +23,7 @@ class TestEssentials(object):
     topic = "/test_topic"
     topic_as_signed_chars = b"/test_topic"
     topic_as_bytes = bytearray(topic, "utf-8")
-    control_topic_name = b'xi/ctrl/v1/unique device id/clt'
+    control_topic_name = b'xi/ctrl/v1/unique device id/cln'
     payload_as_bytes = b"This is just a sample payload with some exotic characters &^&%$%#@"
     payload_as_string = payload_as_bytes.decode("utf-8")
     binary_payload = bytearray([0,1,1,2,3,5,8,13,21,0,34,55,89,144,0,233,255])
